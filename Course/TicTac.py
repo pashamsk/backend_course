@@ -67,7 +67,6 @@ class TicTacGame:
         """Проверка выигрышной комбинации, начиная с 5го хода"""
         win = [[0, 1, 2], [0, 3, 6], [0, 4, 8], [3, 4, 5], [6, 7, 8], [2, 4, 6], [2, 5, 8], [1, 4, 7]]
         if i > 4:
-            enumerate()
             for _ in range(len(win)):
                 if set(win[_]).issubset(u_i):
                     self.flag = 1
