@@ -20,19 +20,17 @@ class TestTicTac(TestCase):
         # self.assertEqual(c, 1)
         pass
 
-    def test_validate_input(self):
-        a = '1'
-        b = '12'
-        c = '-1'
-        d = 'wer2'
-        self.assertEqual(TicTacGame.validate_input(self, a), 1)
-        self.assertEqual(TicTacGame.validate_input(self, b), None)
-        self.assertEqual(TicTacGame.validate_input(self, c), None)
-        self.assertEqual(TicTacGame.validate_input(self, d), None)
+    def test_validate_input(self): # запускать игру
+        """Функция validate_input должна возвращать либо None, либо уникальное значение от 1 до 9"""
+        self.assertIsNotNone(TicTacGame.validate_input('1'))
+        self.assertIsNone(TicTacGame.validate_input('12'))
+        self.assertIsNone(TicTacGame.validate_input('-1'))
+        self.assertIsNone(TicTacGame.validate_input('wer2'))
 
     def test_replace_1(self):
+        """Функция replace_1 заменяет i-тый член списка на х или о"""
         b = [1, 2, 3, 'x', 5, 6, 7, 8, 9]
-        TicTacGame.replace_1(self, 4, 'x')
+        TicTacGame.replace_1(4, 'x')
         self.assertEqual(TicTacGame.board, b)
 
     def test_check_winner(self):
@@ -49,3 +47,6 @@ class TestTicTac(TestCase):
 
 if __name__ == '__main__':
     main()
+    Game = TicTacGame()
+    Game.start_game()
+
