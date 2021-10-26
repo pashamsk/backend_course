@@ -3,7 +3,8 @@ class TicTacGame:
 
     board = list(range(1, 10))
 
-    def show_board(self):
+    @staticmethod
+    def show_board():
         """Вывод игрового поля"""
         for i in range(1, 10):
             if i % 3 == 0:
@@ -12,22 +13,24 @@ class TicTacGame:
     def input_1(self, user):  # тест
         """Пользовательский ввод"""
         print(f'{user}, ваш ход')
-        y = TicTacGame.validate_input(self, input())
+        y = TicTacGame.validate_input(input())
         if y is None:
-            return self.input_1(user)
+            return self.input_1(user) #замокать ввод
         return y
 
-    def validate_input(self, j):
+    @staticmethod
+    def validate_input(j):
         """Валидный ввод номера клетки"""
         try:
             k = int(j)
             if 0 < k < 10 and TicTacGame.board[k - 1] != ('x' or 'o'):
                 return k
-            print('введи число заново')
+            print('введи число заново') #конкретизировать ошибку
         except ValueError:
             print('это не число')
 
-    def replace_1(self, x, point):
+    @staticmethod
+    def replace_1(x, point):
         """Меняет на доске соответствующий индекс на х или о"""
         TicTacGame.board.pop(x - 1)
         TicTacGame.board.insert(x - 1, point)
@@ -41,20 +44,20 @@ class TicTacGame:
         u_2 = []
         i = 0
         u_i = u_1
-        self.show_board()
-        while self.check_winner(u_i, i) is False and i < 9:
+        TicTacGame.show_board()
+        while not self.check_winner(u_i, i) and i < 9:
             if i % 2 == 0:
                 x = self.input_1(usr_1)
-                self.replace_1(x, 'x')
+                TicTacGame.replace_1(x, 'x')
                 u_1.append(x - 1)
                 u_i = u_1
             else:
                 y = self.input_1(usr_2)
-                self.replace_1(y, 'o')
+                TicTacGame.replace_1(y, 'o')
                 u_2.append(y - 1)
                 u_i = u_2
             i += 1
-            self.show_board()
+            TicTacGame.show_board()
         if self.flag == 1:
             if u_i == u_1:
                 print(f'{usr_1} выиграл')
@@ -62,6 +65,7 @@ class TicTacGame:
                 print(f'{usr_2} выиграл')
         else:
             print('ничья')
+
 
     def check_winner(self, u_i, i):
         """Проверка выигрышной комбинации, начиная с 5го хода"""
