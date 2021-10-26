@@ -25,7 +25,10 @@ class TicTacGame:
             k = int(j)
             if 0 < k < 10 and TicTacGame.board[k - 1] != ('x' or 'o'):
                 return k
-            print('введи число заново') #конкретизировать ошибку
+            if k not in range(1, 9):
+                print('выход за ренж')
+            else:
+                print('клетка занята')
         except ValueError:
             print('это не число')
 
