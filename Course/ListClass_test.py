@@ -3,7 +3,7 @@ from ListClasse import MyList
 
 
 class TestListClass(TestCase):
-
+    """Тесты класса MyList"""
     a = MyList([5, 1, 3, 7])
     b = MyList([1, 2, 7])
     c = MyList([3, 4])
@@ -14,6 +14,7 @@ class TestListClass(TestCase):
     sub_2 = d - c
 
     def test_add(self):
+        """Проверка переопределенной в классе MyList функции суммирования списков"""
         self.assertEqual(self.sum_1, [6, 3, 10, 7])
         self.assertTrue(isinstance(self.sum_1, MyList))
         self.assertEqual(self.b, [1, 2, 7])
@@ -21,6 +22,9 @@ class TestListClass(TestCase):
         self.assertTrue(isinstance(self.sum_2, MyList))
 
     def test_sub(self):
+        """
+        Проверка переопределенной в классе MyList функции разности списков
+        """
         self.assertEqual(self.sub_1, [4, -1, -4, 7])
         self.assertTrue(isinstance(self.sum_1, MyList))
         self.assertEqual(self.b, [1, 2, 7])
@@ -28,6 +32,9 @@ class TestListClass(TestCase):
         self.assertTrue(isinstance(self.sum_2, MyList))
 
     def test_eq(self):
+        """
+        Проверка переопределенной в классе MyList функции сравнения списков
+        """
         self.assertTrue(self.a == [8, 8])
         self.assertFalse(self.a == self.d)
 
