@@ -32,13 +32,3 @@ class CustomClass(metaclass=CustomMeta):
     @staticmethod
     def line():
         return 100
-
-
-a = CustomClass()
-print(CustomClass.__dict__)
-print(hasattr(a, 'custom_x'))
-print(hasattr(a, 'x'))
-print(hasattr(CustomClass, 'custom_line'))
-print(hasattr(CustomClass, 'custom_x'))
-print(hasattr(CustomClass, 'line'))
-print(hasattr(CustomClass, 'x'))
