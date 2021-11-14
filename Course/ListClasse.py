@@ -2,31 +2,40 @@ class MyList(list):
 
     def __init__(self, lst=[]):
         super(MyList, self).__init__(lst)
-        self.my_list = lst
 
     def __add__(self, other):
         return MyList.construct(self, other, flag=1)
 
+    def __radd__(self, other):
+        return MyList.construct(other, self, flag=1)
+
     def __sub__(self, other):
         return MyList.construct(self, other, flag=0)
 
+    def __rsub__(self, other):
+        return MyList.construct(other, self, flag=0)
+
     def __eq__(self, other):
-        if len(self.my_list) == len(other):
-            for _ in range(len(self.my_list)):
-                if self.my_list[_] != other[_]:
-                    return False
-        return True
+        sum_1 = 0
+        sum_2 = 0
+        for _ in range(len(self)):
+            sum_1 += self[_]
+        for _ in range(len(other)):
+            sum_2 += other[_]
+        if sum_1 == sum_2:
+            return True
+        return False
 
     def construct(self, other, flag):
-        dif = len(self.my_list) - len(other)
+        dif = len(self) - len(other)
         if dif == 0:
-            return MyList.my_meth(self.my_list, other, flag)
+            return MyList.my_meth(self, other, flag)
         elif dif > 0:
-            tmp = other
+            tmp = other.copy()
             tmp.extend([0] * dif)
-            return MyList.my_meth(self.my_list, tmp, flag)
+            return MyList.my_meth(self, tmp, flag)
         else:
-            tmp = self.my_list
+            tmp = self.copy()
             tmp.extend([0] * abs(dif))
             return MyList.my_meth(tmp, other, flag)
 
@@ -39,15 +48,3 @@ class MyList(list):
                 res = self[_] + other[_]
             sub_list.append(res)
         return sub_list
-
-v = [2, 4, 7]
-a = MyList([1, 3, 4, 5, 7])
-b = MyList([5, 6, 8])
-d = MyList([5, 6, 8])
-c = a + v
-e = a + b
-print(c, e)
-print(b - a)
-print(isinstance(c, MyList))
-print(b == d)
-# print(b == c)
