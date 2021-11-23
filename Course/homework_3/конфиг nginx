@@ -1,0 +1,27 @@
+server {
+
+
+        listen   80;
+        server_name mysite.ru www.mysite.ru;
+
+        location ~* ^.+\.(js|css|png|jpg|jpeg|gif|ico|woff|woff2|swf|ttf|svg|html|txt)$ {
+        root  /home/pashamsk/my_project/public/;
+        try_files $uri =404;
+        }
+
+        location /API/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        }
+
+        #location /{
+        #index index.htm;
+        #root /home/pashamsk/my_project/public/;
+        #}
+
+        #location /downloads {
+        #root /home/pashamsk/my_project/public/images;
+        #try_files $uri =404;
+	      #}
+}
