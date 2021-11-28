@@ -1,9 +1,11 @@
 from django.urls import path
-from users.views import create_user, list_users, user_details, users
+from users.views import create_user, list_users, users, details, update_user, delete_user
 
 urlpatterns = [
     path('', users, name='render'),
     path('create_user/', create_user, name='create'),
     path('list_users/', list_users, name='list'),
-    path('user_details/', user_details, name='details'),
+    path('id=<int:id>/details/', details, name='details'),
+    path('update_user/', update_user),
+    path('delete_user/', delete_user),
 ]
