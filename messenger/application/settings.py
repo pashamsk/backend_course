@@ -132,3 +132,5 @@ try:
     from .local_settings import *
 except ImportError:
     print('local settings not found, a standard db is used')
+
+AUTH_USER_MODEL = 'users.User'

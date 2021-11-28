@@ -1,5 +1,5 @@
 from django.urls import path
-from users.views import create_user, list_users, users, details, update_user, delete_user
+from .views import create_user, list_users, users, details, update_user, delete_user
 
 urlpatterns = [
     path('', users, name='render'),

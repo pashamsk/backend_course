@@ -20,8 +20,8 @@ class Chat(models.Model):
 
     class Meta:
         ordering = ('-added_at',)
-        verbose_name = 'Чат'
-        verbose_name_plural = 'Чаты'
+        verbose_name = 'чат'
+        verbose_name_plural = 'чаты'
 
     def __str__(self):
         return self.title

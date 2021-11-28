@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.urls import path, include
-from chats.views import chat_detail
+from .views import chat_detail
 
 urlpatterns = [
     path('', chat_detail, name='chat_detail'),
-    #path('create_chat/', create_chat, name='create'),
+    # path('create_chat/', create_chat, name='create'),
 ]
