@@ -1,6 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
-class User(models.Model):
-    name = models.CharField(max_length=64, verbose_name='имя пользователя')
-    nick = models.CharField(max_length=64, unique=True, verbose_name='ник пользователя')
+class User(AbstractUser):
+    location = models.CharField('Город', max_length=30, blank=True)
+    birthday = models.DateField('Дата рождения', null=True, blank=True)
