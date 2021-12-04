@@ -9,7 +9,7 @@ class Chat(models.Model):
         max_length=64,
         verbose_name='название чата'
     )
-    user_id = models.ForeignKey(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         # on_delete=models.SET_DEFAULT(?),

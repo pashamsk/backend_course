@@ -2,6 +2,10 @@ from django.http.response import JsonResponse, HttpResponse
 from django.template import loader
 from django.views.decorators.http import require_GET, require_POST, require_safe
 
+from rest_framework import viewsets
+
+from .serializers import UserSerializer
+
 from .models import User
 
 
@@ -78,3 +82,8 @@ def details(request, id):
 def users(request):
     template = loader.get_template('11.html')
     return HttpResponse(template.render())
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
