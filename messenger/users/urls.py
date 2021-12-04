@@ -1,6 +1,8 @@
 from django.urls import path
 from .views import create_user, list_users, users, details, update_user, delete_user
 
+
+
 urlpatterns = [
     path('', users, name='render'),
     path('create_user/', create_user, name='create'),

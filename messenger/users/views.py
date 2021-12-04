@@ -1,12 +1,23 @@
 from django.http.response import JsonResponse, HttpResponse
 from django.template import loader
 from django.views.decorators.http import require_GET, require_POST, require_safe
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
 from rest_framework import viewsets
 
 from .serializers import UserSerializer
 
 from .models import User
+
+
+def login(request):
+    return render(request, 'login.html')
+
+
+@login_required
+def home(request):
+    return render(request, 'home.html')
 
 
 @require_POST

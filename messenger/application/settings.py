@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,12 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'social_django',
+    'sslserver',
+    'django_extensions',
     'chats',
-    #'messages',
     'static',
     'templates',
     'users',
+    # 'messages',
+    # 'rest_framework_social_oauth2',
+    # 'rest_framework',
+    # 'oauth2_provider',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'application.urls'
@@ -62,6 +69,7 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
             '/home/pashamsk/my_project/django/messenger/users/temp/',
+            '/home/pashamsk/my_project/django/messenger/templates/',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -70,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
             ],
         },
     },
@@ -85,6 +94,46 @@ DATABASES = {
 
 }
 
+# REST_FRAMEWORK = {
+#     'DEFAULT_RENDERER_CLASSES': [
+#         'rest_framework.renderers.JSONRenderer',
+#     ],
+#     'DEFAULT_PARSER_CLASSES': [
+#         'rest_framework.parsers.JSONParser',
+#     ],
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         "oauth2_provider.contrib.rest_framework.OAuth2Authentication",
+#         "rest_framework_social_oauth2.authentication.SocialAuthentication",
+#     ],
+# }
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+    # 'social_core.backends.vk.VKOAuth2',
+    # 'rest_framework_social_oauth2.backends.DjangoOAuth2',
+]
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'login'
+
+
+# SOCIAL_AUTH_VK_OAUTH2_KEY = '8017489'
+# SOCIAL_AUTH_VK_OAUTH2_SECRET = 'PgkB5Wd8XOj9dLusuHV3'
+
+SOCIAL_AUTH_FACEBOOK_KEY = '4584105305009058' # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = 'e8ff508e217bf3d768a23cfadde6368e' # App Secret
+
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+
+SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
