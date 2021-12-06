@@ -2,6 +2,7 @@ from .models import User
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
 from django.contrib.auth.password_validation import validate_password
+from django.http.response import HttpResponseRedirect
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,3 +32,11 @@ class UserSerializer(serializers.ModelSerializer):
             user.set_password(validated_data['password'])
             user.save()
         return user
+
+
+class UserAuthSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username']
+
+

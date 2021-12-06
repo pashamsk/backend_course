@@ -6,11 +6,12 @@ from django.contrib.auth import views as auth_views
 from rest_framework.routers import DefaultRouter
 from rest_framework.urlpatterns import format_suffix_patterns
 
-from users.views import UserViewSet, login, home
+from users.views import UserViewSet, login, home, UserAuthViewSet
 
 
 router = DefaultRouter()
-router.register(r'api/users', UserViewSet, basename='users')
+router.register(r'api/admin/users', UserViewSet, basename='users')  #api/admin/users
+# router.register(r'api/users', UserAuthViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),

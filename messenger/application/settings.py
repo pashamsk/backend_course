@@ -39,16 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
+    'rest_framework',
     'sslserver',
     'django_extensions',
     'chats',
     'static',
     'templates',
     'users',
+    'rest_framework_social_oauth2',
+    'oauth2_provider',
     # 'messages',
-    # 'rest_framework_social_oauth2',
-    # 'rest_framework',
-    # 'oauth2_provider',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
+    # 'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'application.urls'

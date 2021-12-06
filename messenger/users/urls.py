@@ -7,7 +7,7 @@ urlpatterns = [
     path('', users, name='render'),
     path('create_user/', create_user, name='create'),
     path('list_users/', list_users, name='list'),
-    path('id=<int:id>/details/', details, name='details'),
+    path('<int:id>/', details, name='details'),
     path('update_user/', update_user),
     path('delete_user/', delete_user),
 ]

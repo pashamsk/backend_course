@@ -1,14 +1,20 @@
-from django.http.response import JsonResponse, HttpResponse
+from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template import loader
 from django.views.decorators.http import require_GET, require_POST, require_safe
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from rest_framework.response import Response
+from rest_framework import status
+
+from django.contrib import auth
 
 from rest_framework import viewsets
 
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserAuthSerializer
 
 from .models import User
+
+from django.core.exceptions import PermissionDenied
 
 
 def login(request):
@@ -18,6 +24,16 @@ def login(request):
 @login_required
 def home(request):
     return render(request, 'home.html')
+
+
+# def my_login_required(function):
+#     def wrapper(request, *args, **kw):
+#         user = request.user
+#         if user.is_anonymous is False:
+#             return function(request, *args, **kw)
+#         else:
+#             return HttpResponseRedirect('/')
+#     return wrapper
 
 
 @require_POST
@@ -30,9 +46,8 @@ def create_user(request):
         )
         new_user.save()
     except ValueError:
-        return HttpResponse('BadRequest', status=400)
-    return HttpResponse('UserCreated', status=201)
-    # return HttpResponseRedirect("/")
+        return JsonResponse({'status': '400 BadRequest'})
+    return JsonResponse({'status': '200 OK UserCreated'})
 
 
 @require_POST
@@ -43,10 +58,10 @@ def update_user(request):
         up_user.location = data.get('location')
         up_user.save()
     except ValueError:
-        return HttpResponse('BadRequest', status=400)
+        return JsonResponse({'status': '400 BadRequest'})
     except User.DoesNotExist:
-        return HttpResponse('UserNotFound', status=404)
-    return HttpResponse('UserEdited', status=200)
+        return JsonResponse({'status': '404 UserNotFound'})
+    return JsonResponse({'status': '200 OK UserEdited'})
 
 
 @require_POST
@@ -56,12 +71,13 @@ def delete_user(request):
         del_user = User.objects.get(id=data.get('id'))
         del_user.delete()
     except ValueError:
-        return HttpResponse('BadRequest', status=400)
+        return JsonResponse({'status': '400 BadRequest'})
     except User.DoesNotExist:
-        return HttpResponse('UserNotFound', status=404)
-    return HttpResponse('UserDeleted', status=200)
+        return JsonResponse({'status': '404 UserNotFound'})
+    return JsonResponse({'status': '200 OK UserDeleted'})
 
 
+# @my_login_required
 @require_safe
 def list_users(request):
     all_users = User.objects.all()
@@ -86,7 +102,7 @@ def details(request, id):
             }
         ]
     except User.DoesNotExist:
-        return HttpResponse('UserNotFound', status=404)
+        return JsonResponse({'status': '404 UserNotFound'})
     return JsonResponse({f'user id = {id}': data})
 
 
@@ -98,3 +114,43 @@ def users(request):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+def my_login_required(function):
+    def wrapper(self, request, *args, **kw):
+        if self.request._user.is_authenticated is True:
+            return function(self, request, *args, **kw)
+        else:
+            return HttpResponseRedirect('/')
+    return wrapper
+
+
+class UserAuthViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserAuthSerializer
+
+    @my_login_required
+    def retrieve(self, request, pk, format=None):
+        queryset = User.objects.get(username=request._user)
+        serializer = UserSerializer(queryset)
+        return Response(serializer.data)
+
+    @my_login_required
+    def update(self, request, *args, **kwargs):
+        queryset = User.objects.get(username=request._user)
+        serializer = UserSerializer(queryset)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @my_login_required
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
+    @my_login_required
+    def destroy(self, request, format=None):
+        queryset = User.objects.get(username=request._user)
+        queryset.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
