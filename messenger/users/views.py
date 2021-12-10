@@ -14,7 +14,11 @@ from .serializers import UserSerializer, UserAuthSerializer
 
 from .models import User
 
+from tracker.tasks import send_mail_create
+
 from django.core.exceptions import PermissionDenied
+
+
 
 
 def login(request):
@@ -24,16 +28,6 @@ def login(request):
 @login_required
 def home(request):
     return render(request, 'home.html')
-
-
-# def my_login_required(function):
-#     def wrapper(request, *args, **kw):
-#         user = request.user
-#         if user.is_anonymous is False:
-#             return function(request, *args, **kw)
-#         else:
-#             return HttpResponseRedirect('/')
-#     return wrapper
 
 
 @require_POST
@@ -118,10 +112,10 @@ class UserViewSet(viewsets.ModelViewSet):
 
 def my_login_required(function):
     def wrapper(self, request, *args, **kw):
-        if self.request._user.is_authenticated is True:
+        if self.request._user.is_authenticated:
             return function(self, request, *args, **kw)
         else:
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/')  # см дополнения
     return wrapper
 
 
@@ -154,3 +148,12 @@ class UserAuthViewSet(viewsets.ModelViewSet):
         queryset = User.objects.get(username=request._user)
         queryset.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def create(self, request, format=None):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            send_mail_create.delay(serializer.data['username'], serializer.data['id'], serializer.data['date_joined'])
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

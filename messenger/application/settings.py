@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,8 +29,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CELERY_TIMEZONE = "Europe/Moscow"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,6 +53,9 @@ INSTALLED_APPS = [
     'users',
     'rest_framework_social_oauth2',
     'oauth2_provider',
+    'tracker',
+    'django_celery_results',
+    'django_celery_beat',
     # 'messages',
 ]
 
@@ -120,12 +128,11 @@ LOGOUT_URL = 'logout'
 LOGOUT_REDIRECT_URL = 'login'
 
 
-# SOCIAL_AUTH_VK_OAUTH2_KEY = '8017489'
-# SOCIAL_AUTH_VK_OAUTH2_SECRET = 'PgkB5Wd8XOj9dLusuHV3'
-
-SOCIAL_AUTH_FACEBOOK_KEY = '4584105305009058' # App ID
-SOCIAL_AUTH_FACEBOOK_SECRET = 'e8ff508e217bf3d768a23cfadde6368e' # App Secret
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [

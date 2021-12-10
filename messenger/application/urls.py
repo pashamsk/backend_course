@@ -11,7 +11,7 @@ from users.views import UserViewSet, login, home, UserAuthViewSet
 
 router = DefaultRouter()
 router.register(r'api/admin/users', UserViewSet, basename='users')  #api/admin/users
-# router.register(r'api/users', UserAuthViewSet, basename='users')
+router.register(r'api/users', UserAuthViewSet, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
