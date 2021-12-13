@@ -4,7 +4,7 @@ from django.views.decorators.http import require_GET, require_POST, require_safe
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, generics
 
 from django.contrib import auth
 
@@ -18,7 +18,14 @@ from tracker.tasks import send_mail_create
 
 from django.core.exceptions import PermissionDenied
 
+from .documents import UserDocument
+# from .search import search
 
+import abc
+
+from elasticsearch_dsl import Q
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.views import APIView
 
 
 def login(request):
@@ -157,3 +164,55 @@ class UserAuthViewSet(viewsets.ModelViewSet):
             send_mail_create.delay(serializer.data['username'], serializer.data['id'], serializer.data['date_joined'])
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class SearchUser(generics.ListAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+#
+#     def get_queryset(self):
+#         q = self.request.query_params.get('q')
+#         print(q)
+#         if q is not None:
+#             return search(q)
+#         return super().get_queryset()
+
+
+class PaginatedElasticSearchAPIView(APIView, LimitOffsetPagination):
+    serializer_class = None
+    document_class = None
+
+    @abc.abstractmethod
+    def generate_q_expression(self, query):
+        """This method should be overridden
+        and return a Q() expression."""
+
+    def get(self, request, query):
+        try:
+            q = self.generate_q_expression(query)
+            print(q)
+            search = self.document_class.search().query(q)
+            response = search.execute()
+
+            print(f'Found {response.hits.total.value} hit(s) for query: "{query}"')
+
+            results = self.paginate_queryset(response, request, view=self)
+            serializer = self.serializer_class(results, many=True)
+            return self.get_paginated_response(serializer.data)
+        except Exception as e:
+            return HttpResponse(e, status=500)
+
+
+class SearchUser(PaginatedElasticSearchAPIView):
+    serializer_class = UserAuthSerializer
+    document_class = UserDocument
+
+    def generate_q_expression(self, query):
+        print(query)
+        return Q('bool',
+                 should=[
+                     Q('match', username=query),
+                     Q('match', id=query),
+                     Q('match', location=query),
+                 ], minimum_should_match=1)
+

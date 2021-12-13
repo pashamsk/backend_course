@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'tracker',
     'django_celery_results',
     'django_celery_beat',
+    'django_elasticsearch_dsl',
     # 'messages',
 ]
 
@@ -139,8 +140,19 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 25
+}
+
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'localhost:9200'
+    },
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

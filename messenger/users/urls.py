@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import create_user, list_users, users, details, update_user, delete_user
-
-
+from .views import create_user, list_users, users, details, update_user, delete_user #search_user
+from .views import SearchUser
 
 urlpatterns = [
     path('', users, name='render'),
@@ -10,4 +9,6 @@ urlpatterns = [
     path('<int:id>/', details, name='details'),
     path('update_user/', update_user),
     path('delete_user/', delete_user),
+    path('user/<str:query>/', SearchUser.as_view()),
+    # path('search/', search_user),
 ]
